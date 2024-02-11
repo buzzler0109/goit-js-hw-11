@@ -21,6 +21,14 @@ export function noMatch() {
   });
 }
 
+export function errNotify(err) {
+  iziToast.warning({
+    title: 'Caution',
+    message: `Error: ${err}`,
+    position: 'topRight',
+  });
+}
+
 export function imgTemplate(data) {
   return data.hits
     .map(

@@ -1,12 +1,8 @@
-import SimpleLightbox from 'simplelightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
-import iziToast from 'izitoast';
-import 'izitoast/dist/css/iziToast.min.css';
 import { searchImg } from './js/pixabay-api';
 import { checkUp, noMatch } from './js/render-functions';
-import { imgTemplate } from './js/render-functions';
 import { imgRender } from './js/render-functions';
 import { gallery } from './js/render-functions';
+import { errNotify } from './js/render-functions';
 
 export const refs = {
   formEl: document.querySelector('.search-form'),
@@ -27,16 +23,19 @@ function onFormSubmit(e) {
     checkUp();
     return;
   }
-  searchImg(search).then(data => {
-    if (data.hits.length === 0) {
-      noMatch();
-      refs.galleryEl.innerHTML = '';
-    } else {
-      imgRender(data);
-      gallery.on('show.simplelightbox');
-      gallery.refresh();
-    }
-  });
+  searchImg(search)
+    .then(data => {
+      if (data.hits.length === 0) {
+        noMatch();
+        refs.galleryEl.innerHTML = '';
+      } else {
+        imgRender(data);
+        gallery.on('show.simplelightbox');
+        gallery.refresh();
+      }
+      refs.loader.style.display = 'none';
+    })
+    .catch(err => errNotify(err));
 
   e.target.reset();
 }
